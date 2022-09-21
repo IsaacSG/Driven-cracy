@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { ServerApiVersion } from "mongodb";
+import poll from "./Routes/pollRouter.js";
 
 const app = express();
 
@@ -11,7 +11,9 @@ dotenv.config();
 
 const Port = process.env.PORT || 5000;
 
-app.get("/status", (req, res) => {
+app.use(poll);
+
+app.get('/status', (req, res) => {
     return res.send("ok");
 })
 
