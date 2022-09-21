@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import poll from "./Routes/pollRouter.js";
+import pollRouter from "./Routes/pollRouter.js";
 
 const app = express();
 
@@ -11,7 +11,7 @@ dotenv.config();
 
 const Port = process.env.PORT || 5000;
 
-app.use(poll);
+app.use(pollRouter);
 
 app.get('/status', (req, res) => {
     return res.send("ok");

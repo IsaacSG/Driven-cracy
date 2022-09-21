@@ -28,6 +28,21 @@ export async function postPoll (req, res) {
     }
 
     catch(error) {
+        console.log(error);
+    }
+}
+
+export async function getPoll(req, res) {
+    try {
+        const polls = await db
+        .collection('poll')
+        .find()
+        .toArray();
+
+        return res.status(200).send(polls);
+    }
+
+    catch(error) {
 
     }
 }
