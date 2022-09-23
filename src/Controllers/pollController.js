@@ -1,14 +1,13 @@
 import db from "../Database/MongoDB.js";
 import { pollSchema } from "../Schemas/pollSchema.js";
 import dayjs from "dayjs";
+import { ObjectId } from "mongodb";
 
 
 export async function postPoll (req, res) {
     let { title, expiredAt } = req.body;
-    console.log(expiredAt);
     if(expiredAt === "" || expiredAt === undefined) {
         expiredAt = dayjs().add(1, 'month').format('YYYY-MM-DD HH:mm'); 
-        console.log(expiredAt);
     }
     const validate = pollSchema.validate({ title, expiredAt });
 
@@ -43,6 +42,30 @@ export async function getPoll(req, res) {
     }
 
     catch(error) {
+        console.log(error);
+    }
+}
 
+export async function getChoicefromPoll(req, res) {
+    const id = req.params.id;
+
+    const pollVerify = await db
+    .collection('poll')
+    .findOne({_id: new ObjectId(id)});
+
+    if(pollVerify === null) {
+        return res.status(404).send("Poll not exist");
+    }
+
+    try {
+        const choices = await db
+        .collection('choice')
+        .find({pollId: (id)})
+        .toArray();
+
+        return res.status(200).send(choices);
+    }
+    catch(error) {
+        console.log(error);
     }
 }
