@@ -69,3 +69,45 @@ export async function getChoicefromPoll(req, res) {
         console.log(error);
     }
 }
+
+export async function getResult(req, res) {
+    const { id } = req.params;
+
+    const pollVerify = await db
+    .collection('poll')
+    .findOne({_id: new ObjectId(id)});
+
+    if (!pollVerify) {
+        return res.status(404).send("Poll not existe");
+    }
+
+    const choices = await db
+    .collection('choice')
+    .find({ pollId: id})
+    .toArray();
+
+    console.log(choices);
+
+    let mostVoted = 0;
+    let mostVotedTitle = "";
+
+    for (let i = 0; i < choices.length; i++) {
+        let votes = choices[i].vote;
+
+        if (votes > mostVoted) {
+          mostVoted = votes;
+          mostVotedTitle = choices[i].title;
+        }
+
+      }
+
+        
+  try {
+    const result = [];
+    result.push({pollVerify,result: {title: mostVotedTitle, votes: mostVoted}})
+    res.status(200).send(result);
+  } 
+  catch(error) {
+    console.log(error);
+  }
+}
